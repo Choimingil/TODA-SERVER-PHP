@@ -12,7 +12,11 @@ function pdoSqlConnect()
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $pdo;
     } catch (\Exception $e) {
-        new DefaultResponse(FALSE,404,$e->getMessage());
+        // new DefaultResponse(FALSE,404,$e->getMessage());
+        $res['isSuccess'] = FALSE;
+        $res['code'] = 404;
+        $res['message'] = $e->getMessage();
+        echo json_encode($res, JSON_NUMERIC_CHECK);
     }
 }
 

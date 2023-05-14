@@ -25,9 +25,9 @@ function getSQLErrorException($errorLogs, $e, $req)
     $header = isValidHeader("HTTP_X_ACCESS_TOKEN", JWT_SECRET_KEY);
     $res->code = 500;
     $res->SQLException = "SQL Exception -> " . $e->getTraceAsString();
-    $res->header = "header -> " . json_encode($header['id']);
-    $res->req = "req -> " . json_encode($req);
-    $res->pathvar = "pathvar -> ". $vars["postID"];
+//     $res->header = "header -> " . json_encode($header['id']);
+//     $res->req = "req -> " . json_encode($req);
+//     $res->pathvar = "pathvar -> ". $vars["postID"];
     addErrorLogs($errorLogs, $res, $req);
     echo json_encode($res);
 

@@ -1,12 +1,6 @@
 <?php
 use \Monolog\Logger as Logger;
 use Monolog\Handler\StreamHandler;
-use Firebase\JWT\JWT;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-use Google\Auth\ApplicationDefaultCredentials;
-use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
 
 function setLoggerChannel($accessLogs,$errorLogs){
     // log/your.log 파일에 로그 생성. 로그 레벨은 Info
@@ -76,6 +70,28 @@ function addErrorLogs($errorLogs, $res, $body)
 //        sendDebugEmail("Error : " . $req["REQUEST_METHOD"] . " " . $req["REQUEST_URI"] , "<pre>" . json_encode($logData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "</pre>");
 }
 
+function getSQLErrorException($errorLogs, $e, $req)
+{
+    $res = (Object)Array();
+    http_response_code(500);
+    $header = isValidHeader("HTTP_X_ACCESS_TOKEN", JWT_SECRET_KEY);
+    $res->code = 500;
+    $res->SQLException = "SQL Exception -> " . $e->getTraceAsString();
+//     $res->header = "header -> " . json_encode($header['id']);
+//     $res->req = "req -> " . json_encode($req);
+//     $res->pathvar = "pathvar -> ". $vars["postID"];
+    addErrorLogs($errorLogs, $res, $req);
+    echo json_encode($res);
+
+    $title = '투다 오류 발송';
+    $content = json_encode($res);
+
+    $sendData = Array(
+        'title' => $title,
+        'content' => $content
+    );
+    sendToAlarmServer('/mail/error',$sendData);
+}
 
 function getLogs($path)
 {

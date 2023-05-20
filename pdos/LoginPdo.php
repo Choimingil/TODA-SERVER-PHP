@@ -159,6 +159,21 @@ function postLock($data){
     $res['code'] = 100;
     $res['message'] = '앱 비밀번호가 설정되었습니다.';
     echo json_encode($res, JSON_NUMERIC_CHECK);
+
+    // redis 키값 : 테섭 본섭에 맞춰서 변경
+    $redisKey = DB_NAME.IDToEmail($data['id']);
+
+    // redis에 유저 데이터 존재한다면 통과
+    $userRedis = json_decode(getRedis($redisKey),true);
+
+    // 구한 정보 redis에 저장
+    $dataArray = Array(
+        'email' => $userRedis['email'],
+        'id' => (int)$userRedis['id'],
+        'pw' => $userRedis['pw'],
+        'appPW' => $data['appPW']
+    );
+    setRedis($redisKey,json_encode($dataArray));
 //    return;
 }
 
@@ -175,6 +190,21 @@ function deleteLock($data){
     $res['code'] = 100;
     $res['message'] = '앱 잠금이 해제되었습니다.';
     echo json_encode($res, JSON_NUMERIC_CHECK);
+
+    // redis 키값 : 테섭 본섭에 맞춰서 변경
+    $redisKey = DB_NAME.IDToEmail($data['id']);
+
+    // redis에 유저 데이터 존재한다면 통과
+    $userRedis = json_decode(getRedis($redisKey),true);
+
+    // 구한 정보 redis에 저장
+    $dataArray = Array(
+        'email' => $userRedis['email'],
+        'id' => (int)$userRedis['id'],
+        'pw' => $userRedis['pw'],
+        'appPW' => 10000
+    );
+    setRedis($redisKey,json_encode($dataArray));
 //    return;
 }
 

@@ -22,12 +22,11 @@ function addDiaryVer2($userID,$body){
         'typeID' => $body['diaryID'],
         'serverID' => $diaryID
     );
-    sendToCacheServer('/id',$sendData);
 }
 
 function sendDiaryFriend($userID,$diaryID,$body,$receiveUser){
     $receiveID = $receiveUser['userID'];
-    if(isDeletedDiaryUser($receiveUser['userID'],$diaryID)){
+    if(isDeletedDiaryUser($receiveID,$diaryID)){
         $query = "UPDATE UserDiary SET UserDiary.status=? WHERE UserDiary.userID=? and UserDiary.diaryID=?;
               INSERT INTO Log (receiveID, type, typeID, sendID) VALUES (?, ?, ?, ?);";
         execute($query,[$userID*10,$receiveID,$diaryID,$receiveID,1,$diaryID,$userID]);
@@ -38,20 +37,21 @@ function sendDiaryFriend($userID,$diaryID,$body,$receiveUser){
         execute($query,[$receiveID,$diaryID,$body['diaryName'],$userID*10,$receiveID,1,$diaryID,$userID]);
     }
 
-//    $tokenList = Array(
-//        'token'=>$body['tokenList'],
-//        'device'=>$body['deviceList']
-//    );
-//    $sendData = Array(
-//        'type' => 1,
-//        'userName' => $body['userName'],
-//        'userCode' => $body['userCode'],
-//        'diaryID' => $diaryID,
-//        'diaryName' => $body['diaryName'],
-//        'receiveName' => $receiveUser['userName'],
-//        'tokenList' => $tokenList
-//    );
-//    sendToFcmServer($sendData);
+    // $tokenList = Array(
+    //     'token'=>$body['tokenList'],
+    //     'device'=>$body['deviceList']
+    // );
+    // $sendData = Array(
+    //     'user' => $userID,
+    //     'type' => 1,
+    //     'userName' => $body['userName'],
+    //     'userCode' => $body['userCode'],
+    //     'diaryID' => $diaryID,
+    //     'diaryName' => $body['diaryName'],
+    //     'receiveName' => $receiveUser['userName'],
+    //     'tokenList' => $tokenList
+    // );
+    // sendToFcmServer($sendData);
 }
 
 function acceptDiaryFriend($userID,$diaryID,$body,$receiveUser){

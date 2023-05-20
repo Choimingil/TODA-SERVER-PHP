@@ -219,7 +219,7 @@ function getTmpPw($data){
         'tmpPW' => $tmpPW,
         'email' => $email
     );
-    sendToFcmServer('/mail/pw',$sendData);
+    sendToAlarmServer('/mail/pw',$sendData);
 
     $res['isSuccess'] = TRUE;
     $res['code'] = 100;

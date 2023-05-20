@@ -444,21 +444,6 @@ TODA는 개인정보보호법 제29조에 따라 다음과 같이 안전성 확�
 
             $data = array_merge($header, $body);
             postLock($data);
-
-            // redis 키값 : 테섭 본섭에 맞춰서 변경
-            $redisKey = DB_NAME.IDToEmail($data['id']);
-
-            // redis에 유저 데이터 존재한다면 통과
-            $userRedis = json_decode(getRedis($redisKey),true);
-
-            // 구한 정보 redis에 저장
-            $dataArray = Array(
-                'email' => $userRedis['email'],
-                'id' => (int)$userRedis['id'],
-                'pw' => $userRedis['pw'],
-                'appPW' => $data['appPW']
-            );
-            setRedis($redisKey,json_encode($dataArray));
             break;
 
         /*
@@ -475,21 +460,6 @@ TODA는 개인정보보호법 제29조에 따라 다음과 같이 안전성 확�
             }
 
             deleteLock($header);
-
-            // redis 키값 : 테섭 본섭에 맞춰서 변경
-            $redisKey = DB_NAME.IDToEmail($header['id']);
-
-            // redis에 유저 데이터 존재한다면 통과
-            $userRedis = json_decode(getRedis($redisKey),true);
-
-            // 구한 정보 redis에 저장
-            $dataArray = Array(
-                'email' => $userRedis['email'],
-                'id' => (int)$userRedis['id'],
-                'pw' => $userRedis['pw'],
-                'appPW' => 10000
-            );
-            setRedis($redisKey,json_encode($dataArray));
             break;
 
         /*

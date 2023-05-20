@@ -89,7 +89,6 @@ function requiresSetting(){
     require './utils/system.php';
     require './utils/jwt.php';
     require './utils/fcm.php';
-    require './utils/mail.php';
     require './env.php';
     require './utils/redis.php';
     require './utils/db.php';

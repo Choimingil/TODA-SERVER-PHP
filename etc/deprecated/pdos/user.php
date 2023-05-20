@@ -102,7 +102,8 @@ where User.code = ?;";
 function getTmpPW($body){
     $tmpPW = createCode();
     $email = $body['id'];
-    sendMail($tmpPW,$email);
+
+    // sendMail($tmpPW,$email);
 
     $query = 'UPDATE User SET password = ? WHERE ID = ?';
     return execute($query,[$tmpPW,emailToID($email)]);

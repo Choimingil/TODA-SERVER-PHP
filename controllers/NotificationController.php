@@ -119,7 +119,7 @@ try {
             }
             $data = array_merge($header, $body);
             updateAlarmVer2($data);
-            sendToAlarmServer('/alarm/ver2',$data);
+            // sendToAlarmServer('/alarm/ver2',$data);
             break;
 
         /*
@@ -165,7 +165,7 @@ try {
             $data = array_merge($header, $body);
 
             updateAlarmTime($data);
-            sendToAlarmServer('/alarm/time',$data);
+            // sendToAlarmServer('/alarm/time',$data);
             break;
     }
 } catch (\Exception $e) {

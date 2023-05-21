@@ -1,11 +1,6 @@
 <?php
 require './vendor/autoload.php';
 
-use Firebase\JWT\JWT;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
 function deleteUser($data){
     $pdo = pdoSqlConnect();
     $query = 'UPDATE User SET status = 99999 WHERE ID = ?';
@@ -58,7 +53,23 @@ function updatePassword($data, $secretKey){
         $res['code'] = 100;
         $res['message'] = '비밀번호가 성공적으로 변경되었습니다.';
         echo json_encode($res, JSON_NUMERIC_CHECK);
-        return;
+        
+        // redis 키값 : 테섭 본섭에 맞춰서 변경
+        $redisKey = DB_NAME.IDToEmail($data['id']);
+
+        // redis에 유저 데이터 존재한다면 이어서 진행
+        if(isKeyExist($redisKey)){
+            $userRedis = json_decode(getRedis($redisKey),true);
+
+            // 구한 정보 redis에 저장
+            $dataArray = Array(
+                'email' => $userRedis['email'],
+                'id' => (int)$userRedis['id'],
+                'pw' => $data['pw'],
+                'appPW' => $userRedis['appPW']
+            );
+            setRedis($redisKey,json_encode($dataArray));
+        }
     }
 }
 
@@ -139,7 +150,7 @@ function getUser($data){
     }
 
     $st = $pdo->prepare($query);
-    $st->execute([$data['id']]);
+    $st->execute([$url, $data['id']]);
     $st->setFetchMode(PDO::FETCH_ASSOC);
     $result = $st->fetchAll();
     $st = null;
@@ -200,6 +211,7 @@ where User.code = ? and UserImage.status not like 0;";
 function getTmpPw($data){
     $tmpPW = createCode();
     $email = $data['id'];
+    $userID = emailToID($email);
 
     if(!isValidEmail($email)){
         $res['isSuccess'] = FALSE;
@@ -211,7 +223,7 @@ function getTmpPw($data){
     $pdo = pdoSqlConnect();
     $query = 'UPDATE User SET password = ? WHERE ID = ?';
     $st = $pdo->prepare($query);
-    $st->execute([$tmpPW, emailToID($email)]);
+    $st->execute([$tmpPW, $userID]);
     $st = null;
     $pdo = null;
 
@@ -225,6 +237,23 @@ function getTmpPw($data){
     $res['code'] = 100;
     $res['message'] = '임시 비밀번호가 발급되었습니다.';
     echo json_encode($res, JSON_NUMERIC_CHECK);
+
+    // redis 키값 : 테섭 본섭에 맞춰서 변경
+    $redisKey = DB_NAME.IDToEmail($userID);
+
+    // redis에 유저 데이터 존재한다면 이어서 진행
+    if(isKeyExist($redisKey)){
+        $userRedis = json_decode(getRedis($redisKey),true);
+
+        // 구한 정보 redis에 저장
+        $dataArray = Array(
+            'email' => $userRedis['email'],
+            'id' => (int)$userRedis['id'],
+            'pw' => $tmpPW,
+            'appPW' => $userRedis['appPW']
+        );
+        setRedis($redisKey,json_encode($dataArray));
+    }
 }
 
 function getLog($data){

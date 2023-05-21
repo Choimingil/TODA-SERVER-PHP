@@ -2,9 +2,6 @@
 require './vendor/autoload.php';
 
 use Firebase\JWT\JWT;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
 function createJwt($data, $secretKey){
     if(!isValidUser($data['id'], $data['pw'])){

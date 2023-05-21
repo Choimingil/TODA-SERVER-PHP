@@ -1,5 +1,16 @@
 <?php
 
+function isKeyExist($key){
+    try {
+        $redis = new Redis();
+        $redis->connect(REDIS_HOST, REDIS_PORT, REDIS_TIMEOUT);
+        if(!($redis->exists($key))) return false;
+        else return true;
+    } catch(Exception $e) {
+        die($e->getMessage());
+    }
+}
+
 function getRedis($key){
     try {
         $redis = new Redis();

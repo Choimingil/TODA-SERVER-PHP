@@ -1,11 +1,6 @@
 <?php
 require './vendor/autoload.php';
 
-use Firebase\JWT\JWT;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
 function checkNotification($data){
     $pdo = pdoSqlConnect();
     if(isExistOnlyToken($data['token'])){

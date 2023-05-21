@@ -23,6 +23,7 @@ function apis($r){
     $r->addRoute('GET', '/user', ['UserController', 'getUser']);                                                            //7. 회원정보조회 API
     $r->addRoute('GET', '/usercode/{userCode}/user', ['UserController', 'getUserByUserCode']);                              //7-0. 유저코드를 통한 회원정보 조회 API
     $r->addRoute('GET', '/user/stickers', ['StickerController', 'getUserStickers']);                                        //7-1. 유저 보유 스티커 조회 API(스티커 Controller에 존재)
+    $r->addRoute('POST', '/user/searchPW', ['UserController', 'getTmpPw']);                                                 //7-2. 임시 비밀번호 발급
 
     $r->addRoute('POST', '/notification', ['NotificationController', 'checkNotification']);                                 //1-5. 알림 토큰 저장 API
     $r->addRoute('GET', '/alarm', ['NotificationController', 'checkAlarm']);                                                //1-7. 알림 허용 여부 확인 API
@@ -53,7 +54,7 @@ function apis($r){
     // $r->addRoute('PATCH', '/post', ['PostController', 'updatePostOld']);                                                    //18. 게시물 수정 API Deprecated
     $r->addRoute('PATCH', '/post/ver2', ['PostController', 'updatePost']);                                                  //18-1. 게시물 수정 API(이미지 추가)
 
-    // $r->addRoute('GET', '/diaries/{diaryID:\d+}/posts', ['PostController', 'getPostList']);                                 //19. 게시물 리스트 조회 API Deprecated
+    $r->addRoute('GET', '/diaries/{diaryID:\d+}/posts', ['PostController', 'getPostList']);                                 //19. 게시물 리스트 조회 API
     $r->addRoute('GET', '/diaries/{diaryID:\d+}/posts/ver2', ['PostController', 'getPostListNew']);                         //19-0. 게시물 리스트 조회 API(날짜)
     $r->addRoute('GET', '/diaries/{diaryID:\d+}/posts/countbydate', ['PostController', 'getPostNumByDate']);                //19-1. 게시물 날짜별 개수 조회 API
     // $r->addRoute('GET', '/posts/{postID:\d+}', ['PostController', 'getPostDetail']);                                        //20. 게시물 상세 조회 API Deprecated

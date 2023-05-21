@@ -1,7 +1,5 @@
 <?php
 
-use JetBrains\PhpStorm\ArrayShape;
-
 function createJwt($data, $secretKey): object{
     $jwt = getJWToken($data,$secretKey);
 

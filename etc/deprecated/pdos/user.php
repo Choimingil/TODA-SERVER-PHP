@@ -2,7 +2,7 @@
 
 function createUser($body){
     $code = createCode();
-    $url = "\'"+SERVER_URL.'/uploads/user/default.png'+"\'";
+    $url = "\'".SERVER_URL.'/uploads/user/default.png'."\'";
     $query = "INSERT INTO User (email, password, name, birth, code) VALUES (?, ?, ?, ?, ?);";
     $userID = lastInsertID($query,[$body['email'], $body['password'], $body['name'], "2020-08-30", $code]);
     $queryImage = "INSERT INTO UserImage (userID, URL, size) VALUES (?,$url,100);";

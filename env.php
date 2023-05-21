@@ -17,9 +17,6 @@ const DB_HOST = 'DB_HOST_SAMPLE';
 const DB_USER = 'DB_USER_SAMPLE';
 const DB_PW = 'DB_PW_SAMPLE';
 
-// mail 관련 계정 정보
-const MY_EMAIL = 'cmg4739@gmail.com';
-
 // fcm 관련 정보
 const FCM_ALARM_SERVER = 'FCM_ALARM_SERVER_SAMPLE';
 

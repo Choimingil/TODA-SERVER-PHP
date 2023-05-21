@@ -122,19 +122,19 @@ function updateUser($data){
 
 function getUser($data){
     $pdo = pdoSqlConnect();
-    $url = "\'"+SERVER_URL.'/uploads/user/default.png'+"\'";
+    $url = "\'".SERVER_URL.'/uploads/user/default.png'."\'";
     if(isExistSelfie($data['id'])){
         $query =
             "select User.id as userID, User.code as userCode, User.status as appPW, ifnull(User.email,'카카오 로그인') as email, User.name as name,
         concat(year(User.birth),'-',if(month(User.birth)<10, concat(0,month(User.birth)),month(User.birth)),'-',day(User.birth)) as birth,
-        ifnull(UserImage.URL,"+$url+") as selfie
+        ifnull(UserImage.URL,?) as selfie
         from User left join UserImage on User.id = UserImage.userID where User.ID = ? and UserImage.status not like 0;";
     }
     else{
         $query =
             "select User.id as userID, User.code as userCode, User.status as appPW, ifnull(User.email,'카카오 로그인') as email, User.name as name,
         concat(year(User.birth),'-',if(month(User.birth)<10, concat(0,month(User.birth)),month(User.birth)),'-',day(User.birth)) as birth,
-        "+$url+" as selfie
+        ? as selfie
         from User where User.ID = ?;";
     }
 
@@ -157,7 +157,7 @@ function getUser($data){
 }
 
 function getUserByUserCode($data){
-    $url = "\'"+SERVER_URL.'/uploads/user/default.png'+"\'";
+    $url = "\'".SERVER_URL.'/uploads/user/default.png'."\'";
     $pdo = pdoSqlConnect();
     if(isExistSelfie(userCodeToID($data['pathVar']))){
         $query =

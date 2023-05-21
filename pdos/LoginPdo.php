@@ -47,7 +47,7 @@ function createJwt($data, $secretKey){
 }
 
 function getJwtCache($data){
-    $url = "\'"+SERVER_URL.'/uploads/user/default.png'+"\'";
+    $url = "\'".SERVER_URL.'/uploads/user/default.png'+"\'";
     $pdo = pdoSqlConnect();
     if(isExistSelfie($data['id'])){
         $query =
@@ -85,7 +85,7 @@ function getJwtCache($data){
 
 function createUser($data){
     $code = createCode();
-    $url = "\'"+SERVER_URL.'/uploads/user/default.png'+"\'";
+    $url = "\'".SERVER_URL.'/uploads/user/default.png'+"\'";
 
     while(isValidUserCode($code) == 1){
         $code = createCode();

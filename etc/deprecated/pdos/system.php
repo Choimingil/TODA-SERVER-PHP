@@ -108,7 +108,7 @@ function updateAlarmTime($userID,$body): bool
 
 function getJwtCache($userID)
 {
-    $url = "\'"+SERVER_URL.'/uploads/user/default.png'+"\'";
+    $url = "\'".SERVER_URL.'/uploads/user/default.png'."\'";
     if(isExistSelfie($userID)){
         $query =
             "select User.id as userID, User.code as userCode, User.status as appPW, ifnull(User.email,'카카오 로그인') as email, User.name as name,

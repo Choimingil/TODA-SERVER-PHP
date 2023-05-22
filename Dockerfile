@@ -11,7 +11,7 @@ MAINTAINER Gale <cmg4739@gmail.com>
 # 빌드 시 --no-cache 옵션이 없으면 캐시된 예전 버전의 파일을 클론함
 # docker build -t toda:test --build-arg arg=arg .
 ARG 	JWT_SECRET_KEY \
-	SERVER_URL \
+	SERVER_NAME \
 	DB_NAME \
 	DB_HOST \
 	DB_USER \
@@ -46,7 +46,7 @@ COPY . /var/www/api
 # 참고 : WORKDIR에서 ARG 참조 시 ${env} 형식으로 참조
 WORKDIR /var/www/api
 RUN	sed -i 's%JWT_SECRET_KEY_SAMPLE%'$JWT_SECRET_KEY'%g' env.php && \
-	sed -i 's%SERVER_URL_SAMPLE%'$SERVER_URL'%g' env.php && \
+	sed -i 's%SERVER_URL_SAMPLE%https://'$SERVER_NAME'%g' env.php && \
 	sed -i 's%DB_NAME_SAMPLE%'$DB_NAME'%g' env.php && \
 	sed -i 's%DB_HOST_SAMPLE%'$DB_HOST'%g' env.php && \
 	sed -i 's%DB_USER_SAMPLE%'$DB_USER'%g' env.php && \
@@ -57,14 +57,17 @@ RUN	sed -i 's%JWT_SECRET_KEY_SAMPLE%'$JWT_SECRET_KEY'%g' env.php && \
 
 #4. nginx 수정
 WORKDIR /etc/nginx/sites-available
-RUN	sed -i 's%root /var/www/html;%root /var/www/api;%g' default && \
-	sed -i 's%server_name _;%server_name localhost;%g' default && \
-	sed -i 's%index index.html%index index.php index.html%g' default && \
-	sed -i 's%try_files $uri $uri/ =404;%try_files $uri $uri/ /index.php?$query_string;%g' default && \
-	sed -i 's%#location ~ \\%location ~ \\%g' default && \
-	sed -i 's%#	include snippets/fastcgi-php.conf;%	include snippets/fastcgi-php.conf;%g' default && \
-	sed -i 's%#	fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;%	fastcgi_pass unix:/run/php/php8.0-fpm.sock;%g' default && \
-	sed -i 's%#	fastcgi_pass 127.0.0.1:9000;%}%g' default
+RUN     sed -i 's%# listen 443 ssl default_server;%listen 443 ssl default_server;%g' default && \
+	sed -i 's%# listen [::]:443 ssl default_server;%listen [::]:443 ssl default_server;%g' default && \
+	sed -i 's%root /var/www/html;%root /var/api;%g' default && \
+        sed -i 's%server_name _;%server_name '$SERVER_NAME';%g' default && \
+        sed -i 's%index index.html%index index.php index.html%g' default && \
+        sed -i 's%try_files $uri $uri/ =404;%try_files $uri $uri/ /index.php?$query_string;%g' default && \
+        sed -i 's%#location ~ \\%location ~ \\%g' default && \
+        sed -i 's%#     include snippets/fastcgi-php.conf;%     include snippets/fastcgi-php.conf;%g' default && \
+	sed -i 's%#	fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;%	fastcgi_pass unix:/run/php/php8.0-fpm.sock;%g' default && \ 
+        sed -i 's%#     fastcgi_pass 127.0.0.1:9000;%}%g' default && \
+	sed -i 's%# deny access to .htaccess files, if Apache's document root%   ssl_certificate /etc/letsencrypt/live/'$SERVER_NAME'/fullchain.pem;\n   ssl_certificate_key /etc/letsencrypt/'$SERVER_NAME'/privkey.pem;%g' default
 
 #5. php 수정
 WORKDIR /etc/php/8.0/fpm
@@ -87,5 +90,4 @@ RUN	sed -i 's%;date.timezone =%date.timezone = Asia/Seoul%g' php.ini && \
 # 내부에 설치한 모듈은 설정 파일을 직접 실행시켜야 정상적으로 동작
 # CMD, ENTRYPOINT의 경우 Dockerfile 내에서 단 한번만 실행
 # nginx 서버를 foreground로 돌리지 않으면 컨테이너를 background로 실행해도 컨테이너 안의 서버가 실행이 안된 상태이기 때문에 daemon off로 foreground로 계속 실행 중인 상황으로 만들기
-#CMD service php8.0-fpm start && nginx -g "daemon off;"
 ENTRYPOINT service php8.0-fpm start && nginx -g "daemon off;"
